@@ -78,6 +78,39 @@ Easily spin up entire tunneling infrastructures onto your server without touchin
 
 ---
 
+## Oracle Cloud Always Free Adaptation
+
+This repository is a fork of FirewallFalcon-Manager, specifically optimized and adapted to run seamlessly on Oracle Cloud Always Free Virtual Machines (VMs).
+
+### Crucial Checklist for Oracle Cloud Console (Dashboard)
+
+Oracle Cloud VMs block all incoming traffic by default through Virtual Cloud Network (VCN) Security Lists. To make your tunnels work, you must add Ingress Rules in your Oracle Cloud Console:
+
+1. Go to **Networking** > **Virtual Cloud Networks** > Select your VCN > **Security Lists** > Select your Default Security List.
+2. Add **Ingress Rules** with the following settings:
+   - **Source CIDR**: `0.0.0.0/0`
+   - **IP Protocol**: `TCP`
+   - **Destination Port Range**: Add rules for the following ports:
+     - `22` (SSH Access)
+     - `80` (Standard HTTP & HAProxy Edge Stack)
+     - `443` (Standard HTTPS & HAProxy Edge Stack)
+     - `8080` (Falcon Proxy Websocket)
+     - `8880` (Nginx Cleartext - required for Cloudflare proxying)
+     - `8443` (Nginx TLS - required for Cloudflare proxying)
+     - `8000` (Alternative HTTP Web port)
+
+### Crucial Checklist on the VPS (System)
+
+1. **Nginx Public Binding**: By default in this fork, the internal Nginx configuration binds to wildcard address `0.0.0.0` (instead of the upstream default `127.0.0.1`). This ensures Cloudflare CDN proxies connecting on ports `8880` or `8443` are routed directly to Nginx.
+2. **Service Status Verification**: Ensure that Nginx, HAProxy, and Falcon Proxy are all active and enabled:
+   ```bash
+   sudo systemctl status nginx haproxy falconproxy
+   ```
+3. **Firewall Access**: The local OS firewalls (like iptables or ufw) are automatically configured by the installation script to accept these ports.
+4. **Interactive Administration**: Just type `menu` in your terminal at any time to manage users, renew accounts, or view live bandwidth metrics.
+
+---
+
 ## 💬 Community & Support
 
 * **Telegram Channel:** [t.me/firewallfalcons](https://t.me/firewallfalcons) - Join for updates and support!

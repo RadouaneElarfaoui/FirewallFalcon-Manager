@@ -2451,8 +2451,8 @@ write_internal_nginx_config() {
     mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
     cat > "$NGINX_CONFIG_FILE" <<EOF
 server {
-    listen 127.0.0.1:${NGINX_INTERNAL_HTTP_PORT} default_server;
-    listen 127.0.0.1:${NGINX_INTERNAL_TLS_PORT} ssl http2 default_server;
+    listen 0.0.0.0:${NGINX_INTERNAL_HTTP_PORT} default_server;
+    listen 0.0.0.0:${NGINX_INTERNAL_TLS_PORT} ssl http2 default_server;
     server_tokens off;
     server_name ${server_name};
 
@@ -2612,7 +2612,7 @@ configure_edge_stack() {
 
     backup_edge_configs
 
-    echo -e "\n${C_BLUE}📝 Writing internal Nginx config (127.0.0.1:${NGINX_INTERNAL_HTTP_PORT}/${NGINX_INTERNAL_TLS_PORT})...${C_RESET}"
+    echo -e "\n${C_BLUE}📝 Writing internal Nginx config (0.0.0.0:${NGINX_INTERNAL_HTTP_PORT}/${NGINX_INTERNAL_TLS_PORT})...${C_RESET}"
     write_internal_nginx_config "$server_name"
 
     echo -e "${C_BLUE}📝 Writing HAProxy edge config (${EDGE_PUBLIC_HTTP_PORT}/${EDGE_PUBLIC_TLS_PORT})...${C_RESET}"
